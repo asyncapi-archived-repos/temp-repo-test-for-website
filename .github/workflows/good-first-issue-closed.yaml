@@ -1,0 +1,26 @@
+name: Remove from Good First Issue
+on:
+  issues:
+    types:
+      - closed
+jobs:
+  add-to-good-first-issues:
+    if: github.event.issue.labels.contains('good first issue')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Issue to project
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+          PROJECT_ID: 4
+        run: |
+          item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation($project:ID!, $pr:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $pr}) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+          
+          echo 'ITEM_ID='$item_id >> $GITHUB_ENV
