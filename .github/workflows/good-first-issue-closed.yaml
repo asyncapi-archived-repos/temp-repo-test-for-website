@@ -15,12 +15,9 @@ jobs:
           PROJECT_ID: 4
         run: |
           item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
-            mutation($project:ID!, $pr:ID!) {
-              addProjectNextItem(input: {projectId: $project, contentId: $pr}) {
-                projectNextItem {
-                  id
-                }
+            mutation($project:ID!, $issue:ID!) {
+              deleteProjectNextItem(input: {projectId: $project, itemId: $pr}) {
+                deletedItemId
               }
-            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID"
           
-          echo 'ITEM_ID='$item_id >> $GITHUB_ENV
