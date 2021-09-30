@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Add Issue to project
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
           ISSUE_ID: ${{ github.event.issue.node_id }}
           PROJECT_ID: 4
         run: |
