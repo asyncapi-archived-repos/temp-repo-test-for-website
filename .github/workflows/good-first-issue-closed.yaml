@@ -5,7 +5,7 @@ on:
       - closed
 jobs:
   add-to-good-first-issues:
-    if: github.event.issue.labels.contains('good first issue')
+    if: contains(github.event.issue.labels.*.name, 'good first issue')
     runs-on: ubuntu-latest
     steps:
       - name: Add Issue to project
