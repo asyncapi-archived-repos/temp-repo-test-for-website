@@ -4,7 +4,7 @@ on:
     types:
       - closed
 jobs:
-  add-to-good-first-issues:
+  remove-from-good-first-issues:
     if: contains(github.event.issue.labels.*.name, 'good first issue')
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +21,4 @@ jobs:
               }
             }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
             
-          echo 'Added the issue to the First Good Issue project'
+          echo 'Removed the issue to the First Good Issue project'
