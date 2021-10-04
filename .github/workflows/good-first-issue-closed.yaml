@@ -12,7 +12,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
           ISSUE_ID: ${{ github.event.issue.node_id }}
-          PROJECT_ID: 4
+          PROJECT_ID: "PN_kwDOAPpDts0UBA"
         run: |
           item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation($project:ID!, $issue:ID!) {
