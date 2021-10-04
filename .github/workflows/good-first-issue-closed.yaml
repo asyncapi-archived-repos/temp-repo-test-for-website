@@ -19,5 +19,5 @@ jobs:
               deleteProjectNextItem(input: {projectId: $project, itemId: $pr}) {
                 deletedItemId
               }
-            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID"
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
           
