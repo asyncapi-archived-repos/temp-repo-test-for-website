@@ -16,7 +16,7 @@ jobs:
         run: |
           gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation($project:ID!, $issue:ID!) {
-              deleteProjectNextItem(input: {projectId: $project, itemId: $pr}) {
+              deleteProjectNextItem(input: {projectId: $project, itemId: $issue}) {
                 deletedItemId
               }
             }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
