@@ -21,6 +21,6 @@ jobs:
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id'
+            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID
           
           echo 'Added the issue to the First Good Issue project'
