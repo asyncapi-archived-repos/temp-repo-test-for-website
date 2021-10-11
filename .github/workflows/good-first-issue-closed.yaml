@@ -50,6 +50,6 @@ jobs:
               ) {
                 deletedItemId
               }
-            }' -f project=$PROJECT_ID -f item_id=$ITEM_ID --jq '.data.deleteProjectNextItem.projectNextItem.id')"
+            }' -f project=$PROJECT_ID -f item_id=$ITEM_ID --jq '.data.deleteProjectNextItem.projectNextItem.deletedItemId')"
           
           echo 'Item with ID: '$item_id' Has been removed.'
