@@ -33,7 +33,7 @@ jobs:
               }
             }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > item_ids.json
 
-          echo 'ITEM_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=='+$ISSUE_ID) | .id' item_ids.json) >> $GITHUB_ENV
+          echo 'ITEM_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .id' item_ids.json) >> $GITHUB_ENV
       - name: Remove Issue From Projects
         env:
           GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
