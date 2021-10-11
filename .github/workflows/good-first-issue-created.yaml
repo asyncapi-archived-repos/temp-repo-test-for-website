@@ -3,9 +3,10 @@ on:
   issues:
     types:
       - labeled
+      - reopened
 jobs:
   add-to-good-first-issues:
-    if: github.event.label.name == 'good first issue'
+    if: github.event.label.name == 'good first issue' || contains(github.event.issue.labels.*.name, 'good first issue')
     runs-on: ubuntu-latest
     steps:
       - name: Add Issue to project
