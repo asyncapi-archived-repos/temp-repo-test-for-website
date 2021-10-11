@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: PN_kwDOAPpDts0fAA
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
     steps:
       - name: Add Issue/PR to projects
         env:
-          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
           ISSUE_ID: ${{ github.event.issue.node_id || github.event.pull_request.node_id }}
           PROJECT_ID: PN_kwDOAPpDts0fAA
         run: |
@@ -34,16 +34,29 @@ jobs:
 
       - name: Set date
         env:
-          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
           DATE_FIELD_ID: MDE2OlByb2plY3ROZXh0RmllbGQ2MDIyOA==
+          INTERACTION_FIELD_ID: MDE2OlByb2plY3ROZXh0RmllbGQ2MDIzMA==
+          INTERACTION_FIELD_VALUE: 0
         run: |
           gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation (
               $project: ID!
               $item: ID!
+              $status_field: ID!
+              $status_value: String!
               $date_field: ID!
               $date_value: String!
             ) {
+              set_interaction: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $interaction_field
+                value: $interaction_value
+              }) {
+                projectNextItem {
+                  id
+                  }
+              }
               set_date_posted: updateProjectNextItemField(input: {
                 projectId: $project
                 itemId: $item
@@ -54,4 +67,4 @@ jobs:
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f date_field=$DATE_FIELD_ID -f date_value=$DATE --silent
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f interaction_field=$INTERACTION_FIELD_ID -f interaction_value=$INTERACTION_FIELD_VALUE -f date_field=$DATE_FIELD_ID -f date_value=$DATE --silent
