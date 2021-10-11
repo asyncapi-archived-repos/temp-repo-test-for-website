@@ -9,6 +9,8 @@ on:
 jobs:
   add-to-hot:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: PN_kwDOAPpDts0fAA
     steps:
       - name: Add Issue/PR to projects
         env:
