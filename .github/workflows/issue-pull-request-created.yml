@@ -7,7 +7,7 @@ on:
     types:
       - opened
 jobs:
-  add-to-good-first-issues:
+  add-to-hot:
     runs-on: ubuntu-latest
     steps:
       - name: Add Issue/PR to projects
@@ -16,13 +16,40 @@ jobs:
           ISSUE_ID: ${{ github.event.issue.node_id || github.event.pull_request.node_id }}
           PROJECT_ID: PN_kwDOAPpDts0fAA
         run: |
-          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+          item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation($project:ID!, $pr:ID!) {
               addProjectNextItem(input: {projectId: $project, contentId: $pr}) {
                 projectNextItem {
                   id
                 }
               }
-            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID
+            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
           
-          echo 'Added the issue/pr to the Hot Issues/PRs'
+          echo 'ITEM_ID='$item_id >> $GITHUB_ENV
+
+      - name: Get date
+        run: echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
+
+      - name: Set date
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+          DATE_FIELD_ID: MDE2OlByb2plY3ROZXh0RmllbGQ2MDIyOA==
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation (
+              $project: ID!
+              $item: ID!
+              $date_field: ID!
+              $date_value: String!
+            ) {
+              set_date_posted: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $date_field
+                value: $date_value
+              }) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f date_field=$DATE_FIELD_ID -f date_value=$DATE --silent
