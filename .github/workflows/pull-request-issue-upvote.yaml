@@ -4,7 +4,7 @@ on:
     types:
       - created
 jobs:
-  add-to-hot:
+  upvote:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: PN_kwDOAPpDts0fAA
