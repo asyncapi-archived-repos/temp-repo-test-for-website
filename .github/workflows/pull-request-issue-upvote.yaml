@@ -1,0 +1,70 @@
+name: Upvote issue
+on:
+  issue_comment:
+    types:
+      - created
+jobs:
+  add-to-hot:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: PN_kwDOAPpDts0fAA
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+    steps:
+      - name: Get the item id
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+          ORGANIZATION: asyncapi
+          PROJECT_NUMBER: 4
+          ISSUE_ID: ${{ github.event.issue.node_id || github.event.pull_request.node_id}}
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectNext(number: $number) {
+                  id
+                  items(first:100) {
+                    nodes {
+                      id
+                      fieldValues(last: 2){
+                        nodes {
+                        value
+                        projectField {
+                          name
+                        }
+                        }
+                      }
+                      content {
+                        ... on Issue {
+                          id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > item_ids.json
+          echo 'ITEM_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .id' item_ids.json) >> $GITHUB_ENV
+          echo 'INTERACTIONS_VALUE='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .fieldValues.nodes[] | select(.projectField.name=="NumberOfInteractions") | .value' item_ids.json) >> $GITHUB_ENV
+          echo 'INTERACTIONS_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .fieldValues.nodes[] | select(.projectField.name=="NumberOfInteractions") | .projectField.id' item_ids.json) >> $GITHUB_ENV
+          
+      - name: Increment the interaction count.
+        run: |
+          INTERACTIONS_VALUE=$((INTERACTIONS_VALUE+1))
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation (
+              $project: ID!
+              $item: ID!
+              $interaction_field: ID!
+              $interaction_value: String!
+            ) {
+              set_interaction: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $interaction_field
+                value: $interaction_value
+              }) {
+                projectNextItem {
+                  id
+                  }
+              }
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f interaction_field=$INTERACTIONS_ID -f interaction_value=$INTERACTIONS_VALUE --silent
