@@ -45,7 +45,7 @@ jobs:
               }
             }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > item_ids.json
           echo 'ITEM_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .id' item_ids.json) >> $GITHUB_ENV
-          echo 'INTERACTIONS_VALUE='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .fieldValues.nodes[] | select(.projectField.name=="NumberOfInteractions") | .value' item_ids.json) >> $GITHUB_ENV
+          echo 'INTERACTIONS_VALUE='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .fieldValues.nodes[] | select(.projectField.name=="NumberOfInteractions") | .value | tonumber' item_ids.json) >> $GITHUB_ENV
           echo 'INTERACTIONS_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .fieldValues.nodes[] | select(.projectField.name=="NumberOfInteractions") | .projectField.id' item_ids.json) >> $GITHUB_ENV
           
       - name: Increment the interaction count.
