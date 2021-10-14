@@ -3,9 +3,11 @@ on:
   pull_request_target:
     types: 
       - opened
+      - reopened
   issues:
     types:
       - opened
+      - reopened
 jobs:
   add-to-hot:
     runs-on: ubuntu-latest
