@@ -73,6 +73,7 @@ jobs:
 
 
       - name: Add the data to the projects
+        if: ${{env.COMPLEXITY_OPTION_ID && env.AREA_OPTION_ID}}
         run: |
           gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation (
