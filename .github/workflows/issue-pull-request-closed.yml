@@ -31,6 +31,9 @@ jobs:
                         ... on Issue {
                           id
                         }
+                        ... on PullRequest {
+                          id
+                        }
                       }
                     }
                   }
