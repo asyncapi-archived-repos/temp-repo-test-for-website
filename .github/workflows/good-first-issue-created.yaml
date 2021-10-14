@@ -6,14 +6,14 @@ on:
       - reopened
 jobs:
   add-to-good-first-issues:
+    env:
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+      ISSUE_ID: ${{ github.event.issue.node_id }}
+      PROJECT_ID: PN_kwDOAPpDts0UBA
     if: contains(github.event.issue.labels.*.name, 'good first issue')
     runs-on: ubuntu-latest
     steps:
       - name: Add Issue to project
-        env:
-          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
-          ISSUE_ID: ${{ github.event.issue.node_id }}
-          PROJECT_ID: PN_kwDOAPpDts0UBA
         run: |
          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
             mutation($project:ID!, $pr:ID!) {
